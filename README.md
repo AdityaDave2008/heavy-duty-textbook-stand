@@ -1,110 +1,52 @@
-# Heavy-Duty Ergonomic Textbook Stand
+# Heavy-Duty Textbook Stand
 
-**An editable, 3D-printable desktop book stand designed around an 8 lb textbook.** This is an **early prototype: the 8 lb load target has NOT yet been physically verified.**
+A six-piece, screw-free PLA stand for reading a heavy textbook at a desk. Each cover rests on its own cradle. Two connector bars span the open center, and a removable finger on each side holds the pages open. The V3 design target is an **8 lb textbook**. Physical load testing is pending.
 
-![Rendered prototype of the assembled 3D-printable textbook stand](images/assembled_preview.png)
+![Front view of the V3 FreeCAD assembly showing the two cradles, both connector bars, and both page fingers](images/assembled_preview.png)
 
-## The problem
+## Printable parts
 
-Reading thick textbooks flat on a desk can mean long periods looking downward. I wanted to bring the pages closer to an upright reading position while keeping a heavy book supported and making it possible to turn pages without holding them open continuously.
+| Part | Print quantity | Purpose |
+| --- | ---: | --- |
+| [Left cradle](stl/01_Left_Cradle_PRINT_1.stl) | 1 | Supports the left cover and page stack |
+| [Right cradle](stl/02_Right_Cradle_PRINT_1.stl) | 1 | Supports the right cover and page stack |
+| [Connector bar](stl/03_Connector_Bar_PRINT_2.stl) | 2 | Joins the cradles at two heights |
+| [Page finger](stl/04_Page_Finger_PRINT_2.stl) | 2 | Fits into one of seven slots on each ledge |
 
-## Engineering objectives
+The assembled stand is **440 mm wide** with a **180 mm center gap**. Each cradle has a **70° backrest**, a **190 mm foot depth**, and a **76 mm clear shelf depth**. To turn a page, lift the finger out of its slot, turn the page, and seat it again.
 
-| Requirement | Design response | Verification status |
-| --- | --- | --- |
-| Support an 8 lb (3.63 kg) textbook | Triangulated A-frame sides, two low tie bars, an upper tie bar, continuous shelf | **Not load-tested** |
-| Comfortable reading angle | Fixed backrest about **71° above the desktop** | CAD geometry only |
-| Hold pages open | Independently pivoting page-retaining arms near lower corners | **Fit and usability test pending** |
-| Print on a Creality K2 | Largest individual STL is 246 mm long; standard K2 capacity is 260 × 260 × 260 mm | STL dimensions checked |
-| Easy modification | Editable OpenSCAD CAD with configurable key dimensions; parts exported separately | Source and STLs provided |
-| Reduce sliding | Front shelf lip and planned non-slip feet | Foot pads not included |
+## Print and assemble
 
-## Prototype design
+Open the STLs or the [arranged 3MF plates](plates/) in Creality Print at 100% scale. Print each cradle on its own plate with the broad inner frame face down. The supplied files already have this orientation. Start with the [fit-test pieces](stl/fit_tests/) to check the connector and page-finger fit on your printer. The [assembly guide](docs/assembly.md) covers the settings and assembly order.
 
-The stand uses **two side frames**, a **full-width book shelf**, **three cross rails**, and **two movable page holders**. Its rearward-sloping supports create a near-vertical reading surface. The wide bottom footprint and triangulated side brackets are intended to improve stability compared with a simple folding display easel.
+## Book weight and downward force
 
-![Side-view dimensions and load idea](images/engineering_diagram.png)
+Gravity acts vertically through the book's center of mass. The magnitude of the force is
 
-**Nominal assembled geometry** (excluding bolt heads and the book): approximately 246 mm maximum width across tie bars, 238 mm deep, and 237 mm high. Each part fits on the standard K2 bed. The rest angle is fixed in prototype v0.1; an adjustable-angle mechanism is a planned improvement, not an existing feature.
+```math
+F_g = mg
+```
 
-The shelf can physically accommodate a thick spine between its lip and lower back support, but maximum book thickness, book height, clamp fit, and page-turning performance require measurement and testing against the specific textbook. A textbook wider than the frame must be centered and tested for lateral stability.
+Here, $m$ is the book's mass in kilograms and $g$ is the local gravitational acceleration. First convert the 8 lb target to kilograms. The pound units cancel.
 
-## Preview and files
+```math
+m = (8\,\mathrm{lb})\left(\frac{0.453592\,\mathrm{kg}}{1\,\mathrm{lb}}\right) = 3.628736\,\mathrm{kg} \approx 3.63\,\mathrm{kg}
+```
 
-- [`cad/textbook_stand.scad`](cad/textbook_stand.scad): editable CAD source with configurable dimensions.
-- [`stl/`](stl/): ready-to-import printable STL parts.
-- [`docs/assembly.md`](docs/assembly.md): hardware list and assembly procedure.
-- [`docs/design_notes.md`](docs/design_notes.md): requirements, calculations, technical choices, and limitations.
-- [`docs/load_test.md`](docs/load_test.md): load, stability, page-holding, and iteration tests. **No actual results are claimed.**
-- [`build_stls.sh`](build_stls.sh): repeatable STL export on a machine with OpenSCAD.
+Then multiply the unrounded mass by gravity. One newton equals one kilogram meter per second squared.
 
-### Printable part quantities
+```math
+F_g = (3.628736\,\mathrm{kg})(9.81\,\mathrm{m/s^2}) = 35.59790016\,\mathrm{N} \approx 35.6\,\mathrm{N}
+```
 
-| STL | Quantity |
-| --- | ---: |
-| `side_frame.stl` | 2 |
-| `shelf.stl` | 1 |
-| `front_rail.stl` | 1 |
-| `rear_rail.stl` | 1 |
-| `upper_rail.stl` | 1 |
-| `arm_left.stl` | 1 |
-| `arm_right.stl` | 1 |
+![Side elevation of the V3 stand with an illustrative book and a vertical arrow showing its weight of 35.6 newtons](images/engineering_diagram.png)
 
-All files are provided as individual STLs, not just a compressed archive. The side frames are identical and only require one STL.
+The book adds **35.6 N downward** across the two cradles. The [design notes](docs/design_notes.md) explain how centering affects the load on each side. The [load-test log](docs/load_test.md) records the physical checks still to be run.
 
-## Printing
+## CAD
 
-- Printer: **Creality K2**, 0.4 mm nozzle or similar.
-- Material: **PETG preferred** for the structural parts; PLA/PLA+ may be used for preliminary fit prototypes, but avoid hot cars or other heat exposure. Check your filament manufacturer's parameters.
-- Starting slicer configuration to experiment with: **0.20 mm layers; 5 to 6 walls; 5 to 7 top/bottom layers; 35 to 45% gyroid infill; 6 to 8 walls around holes or load-bearing mounting points as needed.** These are prototype starting points, not an independently validated strength rating.
-- Print the side frames flat with the large profile face on the bed, the shelf with its flat underside on the bed, and the rails and arms flat. Inspect preview for unexpected unsupported sections.
-- With a 246 mm rail on a 260 mm plate, check that any brim fits; do not automatically add an oversized brim.
-- Add stick-on rubber/silicone pads to both frame feet to reduce tabletop sliding.
-
-More detailed instructions are in [docs/assembly.md](docs/assembly.md).
-
-## First-order load calculation
-
-Convert the target book weight into force:
-
-\[
- m = 8\text{ lb}\times \frac{0.453592\text{ kg}}{1\text{ lb}} \approx 3.63\text{ kg}
-\]
-
-\[
- F_g = mg = (3.63\text{ kg})(9.81\text{ m/s}^2) \approx 35.6\text{ N}
-\]
-
-That is the approximate static downward gravitational force of the textbook, **not** a safety factor or the force on any individual printed joint. Printing orientation, material strength, shelf bending, fastener clamping, and tip resistance need physical tests. See [docs/design_notes.md](docs/design_notes.md).
-
-## Validation and documentation plan
-
-1. Check every part for interference, measure screw-hole clearances, and photograph the assembled stand.
-2. Progressively test centered book loads of **2, 4, 6, and 8 lb** over a protected surface. Record deflection and any cracking, creaking, or sliding. Stop at the first sign of damage.
-3. Evaluate opening and turning pages, with different left/right page thicknesses and real textbook dimensions.
-4. Check front, back, and lateral tipping when turning pages and applying small realistic hand forces.
-5. Record before/after CAD changes, print orientation, filament settings, material usage, and actual findings with images and short videos.
-
-Until the tests pass, the design should be labeled **prototype, unverified for 8 lb**. Do not leave an untested loaded stand unattended or use it near fragile equipment.
-
-## Roadmap
-
-- [x] Define the user problem and target design constraints
-- [x] Make the first editable CAD model
-- [x] Export individual STL files and check their mesh integrity/bounding boxes
-- [ ] Print v0.1 on Creality K2
-- [ ] Assemble and test with actual 8 lb textbook
-- [ ] Improve page-holder gripping force and clearance
-- [ ] Measure deflection and adjust structural walls or geometry
-- [ ] Explore adjustable viewing angle in v0.2
-- [ ] Add real photos, load-test videos, iteration data, and a short demonstration
-
-## Tools
-
-OpenSCAD, Creality K2, PETG, STL mesh checking, and GitHub for version control and documentation.
-
-**References:** [Creality K2 build volume and material specifications](https://www.creality.com/products/k2-series-3d-printer), [Prusa: modeling with 3D printing in mind](https://help.prusa3d.com/article/modeling-with-3d-printing-in-mind_164135?product=core-one-l-plus).
+The [FreeCAD macro](cad/Knight_PLA_Stand.FCMacro) builds the V3 cradles, bars, page fingers, and fit coupons. Run it in FreeCAD to generate editable solids and individual STEP or STL exports. Open the [assembled STEP model](cad/Assembly_REFERENCE_ONLY_DO_NOT_PRINT.step) to inspect all six pieces in their installed positions. Both drawings above use this assembly geometry.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+[MIT](LICENSE)

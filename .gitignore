@@ -1,6 +1,5 @@
 .DS_Store
 *.log
 *.gcode
-*.3mf
 .cache/
 __pycache__/

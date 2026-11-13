@@ -1,0 +1,190 @@
+{
+  "revision": "material_saving_v3",
+  "macro_python_syntax_valid": true,
+  "freecad_runtime_tested": false,
+  "validation_method": "Exact native macro construction through OCCT adapter; STEP roundtrips; closed consistently wound meshes; assembly and insertion clearances.",
+  "physical_load_tested": false,
+  "fea_performed": false,
+  "actual_slicer_estimates_available": false,
+  "parts_03_and_04_geometry_unchanged": true,
+  "print_orientation": "INNER frame face down; new files are already oriented",
+  "cradle_cad_volume_reduction_percent": 49.571529011658534,
+  "joint_region_geometry_unchanged": true,
+  "connector_approach_tested": true,
+  "all_keeper_slots_tested": true,
+  "socket_roof_relief_angle_degrees": 45,
+  "nominal_bridges_mm": {
+    "page_peg_socket_roof": 6.6
+  },
+  "parts": [
+    {
+      "name": "01_Left_Cradle_PRINT_1",
+      "quantity": 1,
+      "size_mm": [
+        185.9329537480229,
+        190.00000000000003,
+        130.00000000000003
+      ],
+      "cad_volume_mm3": 571531.9216466299,
+      "old_cad_volume_mm3": 1133351.6770293552,
+      "geometry_changed": true,
+      "difference_from_original_mm3": 1573012.080632712,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 0.020708998548798263,
+      "stl_sha256": "6da40908508378e53e2438be41abae663dc1321f107674f306cdb262fbf68393"
+    },
+    {
+      "name": "02_Right_Cradle_PRINT_1",
+      "quantity": 1,
+      "size_mm": [
+        185.9329537480229,
+        190.00000000000003,
+        130.00000000000003
+      ],
+      "cad_volume_mm3": 571531.9216466296,
+      "old_cad_volume_mm3": 1133351.6770293554,
+      "geometry_changed": true,
+      "difference_from_original_mm3": 1573012.080632712,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 0.05279844789765775,
+      "stl_sha256": "796b14c3f4cda3989c48953f02c43db804806e0a6b8ecfabf48b5dbfffb0d9fa"
+    },
+    {
+      "name": "03_Connector_Bar_PRINT_2",
+      "quantity": 2,
+      "size_mm": [
+        240.0,
+        36.0,
+        13.800000000000006
+      ],
+      "cad_volume_mm3": 64800.0,
+      "old_cad_volume_mm3": 64800.0,
+      "geometry_changed": false,
+      "difference_from_original_mm3": 0.0,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 0.0006866454859846272,
+      "stl_sha256": "85925833e488d482c239742264b6deb0f9f59a03b452d5846132a28eacab810c"
+    },
+    {
+      "name": "04_Page_Finger_PRINT_2",
+      "quantity": 2,
+      "size_mm": [
+        10.000000000000002,
+        83.0,
+        14.000000000000002
+      ],
+      "cad_volume_mm3": 7132.999999999999,
+      "old_cad_volume_mm3": 7132.999999999999,
+      "geometry_changed": false,
+      "difference_from_original_mm3": 0.0,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 9.094947017729282e-13,
+      "stl_sha256": "12ee4aabb0644b6f21a3ff9820bc7b366a02e2c145af4060f4f79d291a323b07"
+    },
+    {
+      "name": "00A_Joint_Fit_Socket_PRINT_1",
+      "quantity": 1,
+      "size_mm": [
+        14.000000000000005,
+        50.0,
+        42.0
+      ],
+      "cad_volume_mm3": 19409.540993485345,
+      "old_cad_volume_mm3": 21079.16599348534,
+      "geometry_changed": true,
+      "difference_from_original_mm3": 12161.049147665579,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 9.139261237578467e-05,
+      "stl_sha256": "5c1de94610b8d8f006ab588e50fa7027af1968a0309310cc32acceefd85b6f5a"
+    },
+    {
+      "name": "00B_Joint_Fit_Key_PRINT_1",
+      "quantity": 1,
+      "size_mm": [
+        46.0,
+        36.0,
+        13.800000000000006
+      ],
+      "cad_volume_mm3": 11976.0,
+      "old_cad_volume_mm3": 11976.0,
+      "geometry_changed": false,
+      "difference_from_original_mm3": 0.0,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 6.1035154431010596e-05,
+      "stl_sha256": "99f420cc30649e5589644abfacc5cbc47219818875b54b42ada2aeedc681f05d"
+    },
+    {
+      "name": "00C_Page_Peg_Fit_Block_PRINT_1",
+      "quantity": 1,
+      "size_mm": [
+        16.000000000000004,
+        14.0,
+        30.0
+      ],
+      "cad_volume_mm3": 5370.959999999999,
+      "old_cad_volume_mm3": 5370.959999999999,
+      "geometry_changed": false,
+      "difference_from_original_mm3": 0.0,
+      "step_roundtrip_difference_mm3": 0.0,
+      "watertight_stl": true,
+      "stl_volume_roundoff_mm3": 2.510070498829009e-05,
+      "stl_sha256": "6cec45c90f236472ecbc4dc9905448820fbfced5cd3e9d63f2491e3588e4e9a9"
+    }
+  ],
+  "plate_checks": [
+    {
+      "file": "Plate_0_Fit_Tests_and_First_Finger.3mf",
+      "objects": 4,
+      "inside_260mm_build_volume": true
+    },
+    {
+      "file": "Plate_1_Left_Cradle.3mf",
+      "objects": 1,
+      "inside_260mm_build_volume": true
+    },
+    {
+      "file": "Plate_2_Right_Cradle.3mf",
+      "objects": 1,
+      "inside_260mm_build_volume": true
+    },
+    {
+      "file": "Plate_3_Two_Connectors_and_Two_Fingers.3mf",
+      "objects": 4,
+      "inside_260mm_build_volume": true
+    }
+  ],
+  "unchanged_files": [
+    {
+      "file": "03_Connector_Bar_PRINT_2.stl",
+      "byte_identical_to_V2": true,
+      "sha256": "85925833e488d482c239742264b6deb0f9f59a03b452d5846132a28eacab810c"
+    },
+    {
+      "file": "04_Page_Finger_PRINT_2.stl",
+      "byte_identical_to_V2": true,
+      "sha256": "12ee4aabb0644b6f21a3ff9820bc7b366a02e2c145af4060f4f79d291a323b07"
+    }
+  ],
+  "mesh_overhang_audit": [
+    {
+      "part": "01_Left_Cradle_PRINT_1",
+      "overhangs_beyond_45_degrees_only_at_keeper_bridges": true,
+      "keeper_bridge_layer_height_mm": [
+        122.3
+      ]
+    },
+    {
+      "part": "02_Right_Cradle_PRINT_1",
+      "overhangs_beyond_45_degrees_only_at_keeper_bridges": true,
+      "keeper_bridge_layer_height_mm": [
+        122.3
+      ]
+    }
+  ]
+}

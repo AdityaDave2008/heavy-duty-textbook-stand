@@ -1,0 +1,117 @@
+KNIGHT PLA STAND - MATERIAL-SAVING V3
+
+WHAT CHANGED
+The two cradles now use 40 mm-wide inner triangular frames, with 14 mm-thick
+backrest rails around the original connector sockets. Full-width 6 mm back
+panels support the covers. The full-width shelf has a 10 mm-thick outer wing
+and an added underside gusset. A transverse heel foot supports the outer wing.
+The base and rear brace no longer extend across the whole 130 mm cradle width.
+This removes 49.57% of each cradle's CAD volume compared with compact V2:
+  V2: 1,133.35 cm3 per cradle
+  V3:   571.53 cm3 per cradle
+This is a GEOMETRY comparison, not a measured filament or print-time saving.
+Creality Print must calculate grams and hours using your actual printer profile.
+No slicer, printer, load test, or FEA was run here. The 8 lb target is unverified.
+
+WHAT STAYS THE SAME
+Cradle size: 185.933 x 190 x 130 mm in supplied print orientation.
+Reading angle: 70 degrees. Backrest length: 180 mm. Assembled width: 440 mm.
+Center gap: 180 mm. Clear shelf depth: 76 mm. Connector heights: 50 and 145 mm.
+Both connector socket profiles and all seven page-finger fit positions remain.
+03_Connector_Bar_PRINT_2.stl and 04_Page_Finger_PRINT_2.stl are byte-identical
+to the previous version. Reuse your existing printed bars and fingers.
+Compact V2 cradles use the same connection locations as V3. Already printed
+V2 cradles do not need replacing solely to save filament. Use V3 for unprinted
+pieces. Do not mix these with the original tall cradles, whose upper joint was
+190 mm high.
+
+IMPORTANT: NEW PRINT ORIENTATION
+Use the supplied V3 STLs or 3MFs exactly as oriented. Each cradle prints on
+its broad INNER frame side, with the thinner outer wing higher above the bed.
+Do not flip it over to match the older files. This keeps the main triangular
+frame in the layer planes and avoids adding unsupported frame sections later.
+The two connector pocket roofs have 45-degree reliefs so they close gradually
+without a broad bridge. The reliefs start beyond the original key clearance.
+The keeper socket roofs still require short 6.6 mm bridges. Inspect these in
+sliced Preview. Print the new 00A socket coupon first; it matches the inner-
+face-down orientation and roof slope. Fit your actual connector to this coupon.
+Supports off initially, with a 5 mm brim. Check the coupon roof and joint fit
+before committing to a large cradle.
+
+CREALITY PRINT STARTING SETTINGS (0.4 MM NOZZLE, ORDINARY PLA)
+CRADLES 01 AND 02:
+  Layer height: 0.24 mm. First layer: 0.20 mm.
+  Walls: 6. Top layers: 7. Bottom layers: 7 (about 1.68 mm solid skins).
+  Infill: 25% gyroid. Brim: 5 mm. Scale: 100%, millimeter units.
+  Keep a calibrated PLA structural/normal profile and its bridge settings.
+  Use the filament maker's temperature range. Do not use a draft/racing profile.
+BARS 03 AND FINGERS 04:
+  Keep the previous 0.20 mm layers, 6 walls, 100% infill, and orientation.
+FIT COUPON 00A:
+  Use the new cradle layer, wall and bridge settings. Fit it with the actual
+  final connector bar. The optional whole coupon plate can use 0.24 mm layers
+  and 100% infill; its small-part copies are for fit checks only. Print the
+  final load-carrying bars and fingers with their settings above.
+These settings are a starting recipe, not a certified load capacity.
+Keeping six walls preserves the external shells while reducing sparse infill.
+0.24 mm layers reduce the cradle layer count from about 650 to 542; actual
+print time does not decrease in direct proportion to layer count or CAD volume.
+
+WHAT TO PRINT
+STL_Print/01_Left_Cradle_PRINT_1.stl: one left cradle.
+STL_Print/02_Right_Cradle_PRINT_1.stl: one right cradle.
+STL_Print/03_Connector_Bar_PRINT_2.stl: two bars total, unchanged.
+STL_Print/04_Page_Finger_PRINT_2.stl: two fingers total, unchanged.
+Print one cradle per plate. With a 5 mm brim each needs about 196 x 200 mm.
+Select your exact K2 model in Creality Print; its nominal bed is 260 x 260 mm.
+Keep scale 100%. Do not scale models to change the joint fit.
+
+READY-ARRANGED PLATES
+Creality_3MF_Plates/Plate_0_Fit_Tests_and_First_Finger.3mf: optional test set.
+Plate_1_Left_Cradle.3mf: one V3 left cradle centered on a 260 mm bed.
+Plate_2_Right_Cradle.3mf: one V3 right cradle centered on a 260 mm bed.
+Plate_3_Two_Connectors_and_Two_Fingers.3mf: unchanged small parts, all copies.
+The plates contain geometry only. Set the printer, PLA and process settings
+yourself. Do not print both the STL and 3MF versions of the same pieces.
+
+FREECAD
+The updated Knight_PLA_Stand.FCMacro builds V3. In Macro > Macros, select the
+extracted folder, select the macro, and Execute. Choose an output folder.
+It writes individual native FCStd, STEP and STL files in a timestamped folder.
+It uses FreeCAD's built-in modules and creates editable base solids, not a
+fully constrained sketch history. FreeCAD itself was not run here, so GUI
+execution and FCStd saving remain untested in native FreeCAD.
+For direct CAD access, open individual files in FreeCAD_STEP. Select one
+solid, then File > Export > STL Mesh. Do not print the assembled reference.
+
+ASSEMBLY AND USE
+1. Place both cradles with feet flat on the desk and an inner gap of 180 mm.
+2. Seat a bar into both lower sockets from the reading side. Repeat with the
+   upper sockets. Keep the front faces flush or slightly recessed. No screws.
+3. Center the book with both covers on the ledges. The 180 mm backrests support
+   the lower portion of its stiff covers. Check for cover flex and binding strain.
+4. Insert each page finger in the first slot ahead of its page stack. Lift it
+   about 14 mm along the page to remove it, turn the page, then replace it.
+5. Smooth paper-contact edges, and use a level, non-slip surface.
+
+LOAD CHECK
+The requested 8 lb book is a design target, not a tested rating. Before using
+the textbook, test at floor level with padded loads, gradually increasing to
+the intended weight while preventing a fall. Inspect for sliding, bending,
+loose joints, cracks, or layer separation. Stop if any appear. Stay nearby
+during an initial one-hour test and inspect during early reading sessions.
+Remove the book between sessions. Keep PLA away from heat and direct sun.
+Remove the book before moving the stand and lift beneath both bases.
+
+DIGITAL VALIDATION
+Every exported piece is a valid single CAD solid and a closed, consistently
+wound STL mesh. STEP exports reimported with negligible geometric difference.
+Assembled pieces do not intersect. Sampled connector insertion paths and all
+seven keeper slots were checked. Connector mating regions match compact V2.
+The macro geometry was run through an OpenCascade adapter. These checks do
+not validate the strength or tolerances of a physical PLA print.
+
+REFERENCES
+https://help.prusa3d.com/article/layers-and-perimeters_1748
+https://blog.prusa3d.com/everything-you-need-to-know-about-infills_43579/
+https://www.creality.com/campaigns/k2-series-buying-guide

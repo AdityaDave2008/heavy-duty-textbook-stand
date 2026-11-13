@@ -1,14 +1,15 @@
-"""Optional STL validation with `pip install trimesh`."""
+"""Check the V3 print files against the original CAD export manifest."""
+import hashlib
+import json
 from pathlib import Path
-import trimesh
 
-ROOT = Path(__file__).resolve().parent
-parts = ['side_frame','shelf','front_rail','rear_rail','upper_rail','arm_left','arm_right']
+root = Path(__file__).resolve().parent
+parts = json.loads((root / "docs/Validation.json").read_text())["parts"]
 for part in parts:
-    mesh = trimesh.load_mesh(ROOT / 'stl' / f'{part}.stl')
-    bbox = mesh.bounding_box.extents
-    assert mesh.is_watertight, f'{part} is not watertight'
-    assert all(dim <= 260 for dim in bbox), f'{part} exceeds standard Creality K2 260-mm limit'
-    assert mesh.volume > 0, f'{part} has invalid volume'
-    print(f'{part:12} dimensions={bbox.round(1)} mm  watertight=YES')
-print('All seven unique STL meshes passed basic automated checks. Physical load is NOT verified.')
+    directory = root / "stl"
+    if part["name"].startswith("00"):
+        directory = directory / "fit_tests"
+    file = directory / (part["name"] + ".stl")
+    if hashlib.sha256(file.read_bytes()).hexdigest() != part["stl_sha256"]:
+        raise ValueError(f"{file.name} differs from the validated CAD export")
+    print(f"{file.name} matches the V3 export")

@@ -1,0 +1,283 @@
+# -*- coding: utf-8 -*-
+"""Knight textbook stand: MATERIAL-SAVING V3 cradle revision, ordinary PLA, no screws.
+
+Run inside FreeCAD with Macro > Macros > Execute.
+Choose a destination folder. A new timestamped subfolder is created there.
+The macro builds geometry using only FreeCAD's built-in Part and MeshPart
+modules. It saves individual FCStd, STEP and STL files plus an assembly view.
+
+Assembly: left cradle x1, right cradle x1, connector bar x2, page finger x2.
+Units: mm. All individual part files are already oriented for printing.
+Cradles are about 186 x 190 x 130 mm. Bars and page fingers are unchanged.
+NEW PRINT ORIENTATION: the broad INNER frame side is down. Do not flip over.
+8 lb is the design target, NOT a physically verified load rating.
+These are editable base solids, not a sketch-constrained feature history.
+"""
+
+import math
+import json
+from datetime import datetime
+from pathlib import Path
+
+import FreeCAD as App
+import Part
+
+# Output and meshing options. Leave OUTPUT_PARENT blank for a folder picker.
+OUTPUT_PARENT = ""
+LINEAR_DEFLECTION = 0.06
+ANGULAR_DEFLECTION = 0.12
+ANGLE_DEG = 70.0
+WIDTH = 130.0
+FRAME_WIDTH = 40.0
+BACKREST_HEIGHT = 180.0
+FOOT_DEPTH = 190.0
+CONNECTION_HEIGHTS = (50.0, 145.0)
+ORIGIN = (0.0, 106.0, 12.0)
+FINGER_POSITIONS = (22, 32, 42, 52, 62, 72, 82)
+V = App.Vector
+
+
+def moved(shape, xyz):
+    result = shape.copy()
+    result.translate(V(*xyz))
+    return result
+
+
+def rotated(shape, axis, degrees):
+    result = shape.copy()
+    result.rotate(V(0, 0, 0), V(*axis), degrees)
+    return result
+
+
+def box(x, y, z, origin=(0, 0, 0)):
+    return Part.makeBox(x, y, z, V(*origin))
+
+
+def prism(points, vector):
+    vertices = [V(*p) for p in points]
+    wire = Part.makePolygon(vertices + [vertices[0]])
+    return Part.Face(wire).extrude(V(*vector))
+
+
+def prism_yz(points, width=WIDTH, x=0):
+    return prism([(x, y, z) for y, z in points], (width, 0, 0))
+
+
+def prism_xy(points, height, z=0):
+    return prism([(x, y, z) for x, y in points], (0, 0, height))
+
+
+def world(shape):
+    return moved(rotated(shape, (1, 0, 0), ANGLE_DEG), ORIGIN)
+
+
+def local(shape):
+    return rotated(moved(shape, tuple(-n for n in ORIGIN)), (1, 0, 0), -ANGLE_DEG)
+
+
+def on_bed(shape):
+    b = shape.BoundBox
+    return moved(shape, (-b.XMin, -b.YMin, -b.ZMin))
+
+
+def build_shapes():
+    c = math.cos(math.radians(ANGLE_DEG))
+    s = math.sin(math.radians(ANGLE_DEG))
+    female = [(-0.4, -10.3), (30.3, -18.5),
+              (30.3, 18.5), (-0.4, 10.3)]
+    top_y = ORIGIN[1] + BACKREST_HEIGHT * c
+    top_z = ORIGIN[2] + BACKREST_HEIGHT * s
+
+    def socket_roof_relief(height, is_left=False):
+        # The key ends at x=30. This relief starts beyond its 0.3 mm clearance.
+        # Printing from inner to outer x, the pocket roof closes at 45 degrees.
+        # It avoids an unsupported cantilever across the open front of a slot.
+        xz = [(30.3, 4.5), (42.3, 16.5), (30.3, 16.5)]
+        if is_left:
+            xz = [(WIDTH - x, z) for x, z in reversed(xz)]
+        return prism([(x, height - 18.5, z) for x, z in xz], (0, 37, 0))
+
+    def cradle(is_left):
+        # The 40 mm inner triangular frame carries the load into the desk.
+        # Full-width wings support the covers and retain the old page holders.
+        frame_x = WIDTH - FRAME_WIDTH if is_left else 0.0
+        panel = world(box(FRAME_WIDTH, BACKREST_HEIGHT, 14, (frame_x, 0, 0)))
+        panel_wing = world(box(WIDTH, BACKREST_HEIGHT, 6, (0, 0, 8)))
+        shelf = world(prism_yz([(0, 0), (14, 0), (14, 90),
+                               (32, 108), (32, 112), (0, 112)], FRAME_WIDTH, frame_x))
+        shelf_wing = world(prism_yz([(4, 8), (14, 8), (14, 90),
+                                    (32, 108), (32, 112), (22, 112), (4, 94)]))
+        shelf_gusset = world(prism_yz([(4, 8), (4, 48), (-6, 8)]))
+        base = box(FRAME_WIDTH, FOOT_DEPTH, 10, (frame_x, 0, 0))
+        rear = prism_yz([(top_y, top_z), (FOOT_DEPTH, 8),
+                         (FOOT_DEPTH - 12, 8), (top_y - 12, top_z)], FRAME_WIDTH, frame_x)
+        # This transverse foot keeps the outer cover wing supported at the heel.
+        heel = box(WIDTH, 35, 22, (0, ORIGIN[1] - 15, 0))
+        core = panel.fuse(panel_wing).fuse(shelf).fuse(shelf_wing)
+        core = core.fuse(shelf_gusset).fuse(base).fuse(rear).fuse(heel).removeSplitter()
+        shape = local(core)
+        profile = [(WIDTH - x, y) for x, y in reversed(female)] if is_left else female
+        for height in CONNECTION_HEIGHTS:
+            shape = shape.cut(prism_xy([(x, y + height) for x, y in profile], 12, 4.5))
+            shape = shape.cut(socket_roof_relief(height, is_left))
+        peg_center = WIDTH - 115 if is_left else 115
+        for depth in FINGER_POSITIONS:
+            shape = shape.cut(box(14.6, 18, 6.6,
+                                  (peg_center - 7.3, -2, depth - 3.3)))
+        return moved(world(shape.removeSplitter()), (-220 if is_left else 90, 0, 0))
+
+    left, right = cradle(True), cradle(False)
+    bow = [(-120, -18), (-90, -10), (90, -10), (120, -18),
+           (120, 18), (90, 10), (-90, 10), (-120, 18)]
+    bar = prism_xy(bow, 9, 4.8).fuse(box(180, 20, 13.8, (-90, -10, 0))).removeSplitter()
+    finger = box(14, 12, 6, (-7, 2, -3)).fuse(box(14, 4, 10, (-7, 14, -5)))
+    stem = prism_yz([(18, -3), (82, -3), (85, 0), (85, 3), (18, 3)], 14, -7)
+    finger = finger.fuse(stem).removeSplitter()
+
+    socket = box(42, 50, 14, (0, -25, 0)).cut(prism_xy(female, 12, 4.5))
+    socket = socket.cut(socket_roof_relief(0)).removeSplitter()
+    test_key = prism_xy([(-16, -10), (0, -10), (30, -18),
+                         (30, 18), (0, 10), (-16, 10)], 9, 4.8)
+    test_key = test_key.fuse(box(16, 20, 13.8, (-16, -10, 0))).removeSplitter()
+    peg_test = box(30, 14, 16, (-15, 0, -8)).cut(
+        box(14.6, 18, 6.6, (-7.3, -2, -3.3))).removeSplitter()
+
+    # Name, quantity, exact print-oriented solid. The tests are separate coupons.
+    parts = [
+        ("01_Left_Cradle_PRINT_1", 1, on_bed(rotated(left, (0, 1, 0), 90))),
+        ("02_Right_Cradle_PRINT_1", 1, on_bed(rotated(right, (0, 1, 0), -90))),
+        ("03_Connector_Bar_PRINT_2", 2, on_bed(rotated(bar, (1, 0, 0), 180))),
+        ("04_Page_Finger_PRINT_2", 2, on_bed(rotated(finger, (0, 1, 0), -90))),
+        ("00A_Joint_Fit_Socket_PRINT_1", 1, on_bed(rotated(socket, (0, 1, 0), -90))),
+        ("00B_Joint_Fit_Key_PRINT_1", 1, on_bed(rotated(test_key, (1, 0, 0), 180))),
+        ("00C_Page_Peg_Fit_Block_PRINT_1", 1, on_bed(rotated(peg_test, (0, 1, 0), 90))),
+    ]
+    assembly = [
+        ("Left_Cradle", left), ("Right_Cradle", right),
+        ("Lower_Connector", world(moved(bar, (0, CONNECTION_HEIGHTS[0], -0.3)))),
+        ("Upper_Connector", world(moved(bar, (0, CONNECTION_HEIGHTS[1], -0.3)))),
+        ("Left_Page_Finger", world(moved(finger, (-205, 0, 52)))),
+        ("Right_Page_Finger", world(moved(finger, (205, 0, 52)))),
+    ]
+    for name, quantity, shape in parts:
+        b = shape.BoundBox
+        if shape.isNull() or not shape.isValid() or len(shape.Solids) != 1:
+            raise RuntimeError("Invalid solid: " + name)
+        limit = 200.0 if "Cradle" in name else 250.0
+        if shape.Volume <= 0 or max(b.XLength, b.YLength, b.ZLength) > limit + 0.01:
+            raise RuntimeError("Invalid volume or oversized part: " + name)
+    for i, (name, shape) in enumerate(assembly):
+        for other_name, other in assembly[i + 1:]:
+            if shape.common(other).Volume > 0.02:
+                raise RuntimeError("Assembly interference: " + name + " / " + other_name)
+    return parts, assembly
+
+
+def qt_widgets():
+    try:
+        from PySide import QtWidgets
+        return QtWidgets
+    except ImportError:
+        try:
+            from PySide2 import QtWidgets
+            return QtWidgets
+        except ImportError:
+            try:
+                from PySide6 import QtWidgets
+                return QtWidgets
+            except ImportError:
+                from PySide import QtGui
+                return QtGui
+
+
+def choose_folder():
+    if OUTPUT_PARENT.strip():
+        return Path(OUTPUT_PARENT).expanduser()
+    if getattr(App, "GuiUp", False):
+        chosen = qt_widgets().QFileDialog.getExistingDirectory(
+            None, "Choose where to save the FreeCAD and print files", str(Path.home()))
+        return Path(chosen) if chosen else None
+    return Path.home()
+
+
+def add_solid(doc, name, shape, quantity=1):
+    obj = doc.addObject("Part::Feature", "Piece_" + name)
+    obj.Label = name
+    obj.Shape = shape
+    obj.addProperty("App::PropertyInteger", "PrintQuantity", "Printing")
+    obj.PrintQuantity = quantity
+    obj.setEditorMode("PrintQuantity", 1)
+    obj.addProperty("App::PropertyString", "MaterialNote", "Printing")
+    obj.MaterialNote = "PLA. Scale 100%. Prototype: no verified load rating."
+    if getattr(App, "GuiUp", False):
+        obj.ViewObject.ShapeColor = (0.08, 0.49, 0.53)
+        if "Connector" in name:
+            obj.ViewObject.ShapeColor = (0.75, 0.83, 0.87)
+        if "Finger" in name:
+            obj.ViewObject.ShapeColor = (0.94, 0.67, 0.26)
+    return obj
+
+
+def main():
+    parent = choose_folder()
+    if parent is None:
+        App.Console.PrintMessage("Cancelled. No files were created.\n")
+        return
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    output = parent / ("Knight_PLA_Lean_FreeCAD_" + stamp)
+    output.mkdir(parents=True, exist_ok=False)
+    for folder in ("FreeCAD_Parts", "STEP_Parts", "STL_Print", "Assembly_Reference"):
+        (output / folder).mkdir()
+    import MeshPart
+    parts, assembly = build_shapes()
+    manifest = []
+    for name, quantity, shape in parts:
+        doc = App.newDocument("KnightPart_" + stamp + "_" + name)
+        obj = add_solid(doc, name, shape, quantity)
+        doc.recompute()
+        if getattr(App, "GuiUp", False):
+            import FreeCADGui as Gui
+            Gui.activeDocument().activeView().viewAxonometric()
+            Gui.activeDocument().activeView().fitAll()
+        doc.saveAs(str(output / "FreeCAD_Parts" / (name + ".FCStd")))
+        shape.exportStep(str(output / "STEP_Parts" / (name + ".step")))
+        mesh = MeshPart.meshFromShape(Shape=shape, LinearDeflection=LINEAR_DEFLECTION,
+                                     AngularDeflection=ANGULAR_DEFLECTION, Relative=False)
+        mesh.write(str(output / "STL_Print" / (name + ".stl")))
+        b = shape.BoundBox
+        manifest.append({"file": name + ".stl", "quantity": quantity,
+                         "size_mm": [b.XLength, b.YLength, b.ZLength]})
+        App.closeDocument(doc.Name)
+    assembly_doc = App.newDocument("KnightAssembly_" + stamp)
+    for name, shape in assembly:
+        add_solid(assembly_doc, name, shape)
+    assembly_doc.recompute()
+    if getattr(App, "GuiUp", False):
+        import FreeCADGui as Gui
+        Gui.activeDocument().activeView().viewAxonometric()
+        Gui.activeDocument().activeView().fitAll()
+    assembly_doc.saveAs(str(output / "Assembly_Reference" / "Assembly_DO_NOT_PRINT.FCStd"))
+    (output / "Print_Quantities.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    (output / "START_HERE.txt").write_text(
+        "MATERIAL-SAVING V3 / PLA / NO SCREWS. Millimeters. Scale 100%.\n"
+        "Each cradle: about 186 x 190 x 130 mm. Print one per plate.\n"
+        "Print left cradle x1, right cradle x1, connector bar x2, page finger x2.\n"
+        "Print the 00 fit coupons first. Use the individual STL_Print files.\n"
+        "Open FreeCAD_Parts files to edit or export one piece.\n"
+        "Select that part in the tree, then File > Export > STL Mesh.\n"
+        "Do not print the complete assembly reference as one object.\n"
+        "Cradles: 0.24 mm layers, 6 walls, 7 top/bottom layers.\n"
+        "Cradles: 25% gyroid. Bars/fingers: 0.20 mm layers, 100% infill.\n"
+        "Keep new INNER-FRAME-DOWN orientation. 5 mm brim on cradles.\n"
+        "45-degree socket roofs. Inspect 6.6 mm peg bridges.\n"
+        "8 lb is an unverified design target. Load-test before use.\n",
+        encoding="utf-8")
+    message = "Created the FreeCAD parts and exported STL/STEP files to:\n" + str(output)
+    App.Console.PrintMessage(message + "\n")
+    if getattr(App, "GuiUp", False):
+        qt_widgets().QMessageBox.information(None, "Knight PLA stand files saved", message)
+
+
+# The special flag is only for geometry validation; normal macro use runs main.
+if not globals().get("KNIGHT_GEOMETRY_ONLY", False):
+    main()

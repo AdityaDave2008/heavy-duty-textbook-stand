@@ -4,7 +4,7 @@
 
 ## Test setup
 
-Use a protected desk, a catch platform or soft surface underneath, and someone nearby to help prevent the load from dropping. Do not test above your laptop, fragile surfaces, or your feet. Confirm bolts and rail end stops are fully retained, frames sit flat, and shelf mounts show no visible damage.
+Use a protected desk, a catch platform or soft surface underneath, and someone nearby to help prevent the load from dropping. Do not test above your laptop, fragile surfaces, or your feet. Confirm that both connector bars are fully seated, both cradle bases sit flat, and the ledges and sockets show no visible damage.
 
 Record:
 - Printer and nozzle: `________`
@@ -16,11 +16,11 @@ Record:
 
 ## Load test sequence
 
-1. Inspect empty stand and photograph the shelf straight-on with a reference ruler.
+1. Inspect empty stand and photograph both ledges straight-on with a reference ruler.
 2. Add a **2 lb** centered test object, then record deflection/sliding and inspect joints.
 3. Repeat at **4 lb** and **6 lb**.
 4. If no damage or permanent deformation occurs, carefully test the full **8 lb** target.
-5. Stop immediately for visible cracks, clicks, sagging, loose bolts, instability, or permanent deformation. Do not leave the weight unattended.
+5. Stop immediately for visible cracks, clicks, sagging, loose connector bars, instability, or permanent deformation. Do not leave the weight unattended.
 6. Record post-load photographs and measurements.
 
 | Load | Date | Deflection (mm) | Slip/tip? | Damage? | Pass/fail + notes |
@@ -32,7 +32,7 @@ Record:
 
 ## Page turning trials
 
-- Test left and right arms at the beginning, middle, and end of the book.
+- Test left and right page fingers at the beginning, middle, and end of the book.
 - Try turning 10 pages on each side.
 - Note whether the retainer lifts, damages the page, catches, or allows it to close.
 - Film 10 to 15 seconds of normal page-turning and post a demo only after successful use.
@@ -47,6 +47,6 @@ Record:
 
 | Version | Problem observed | Change | Retest evidence |
 | --- | --- | --- | --- |
-| v0.1 | Prototype not yet tested | Initial design | Pending |
+| V3 | Physical tests pending | Material-saving cradles | Pending |
 
 A passed test for one print, material, temperature, and book does not make every reprint or altered version equally strong.
