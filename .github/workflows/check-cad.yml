@@ -1,0 +1,24 @@
+name: Validate CAD exports
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  openscad:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OpenSCAD
+        run: sudo apt-get update && sudo apt-get install -y openscad
+      - name: Rebuild STL files
+        run: bash build_stls.sh
+      - name: Confirm exported STL files exist
+        run: |
+          test -s stl/side_frame.stl
+          test -s stl/shelf.stl
+          test -s stl/front_rail.stl
+          test -s stl/rear_rail.stl
+          test -s stl/upper_rail.stl
+          test -s stl/arm_left.stl
+          test -s stl/arm_right.stl
